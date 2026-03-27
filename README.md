@@ -1,5 +1,9 @@
 # CoSyn Governance EXE
 
+<p align="center">
+  <img src="assets/cosyn-governance-banner.png" alt="CoSyn Governance" width="600">
+</p>
+
 Standalone runtime wrapper that enforces CoSyn constitutional governance over all user-to-LLM interaction. Ships as a single downloadable Windows EXE with no external artifact dependencies.
 
 ## What It Does
