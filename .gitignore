@@ -1,0 +1,20 @@
+# Rust build artifacts
+target/
+*.pdb
+
+# Secrets
+.env
+
+# Runtime artifacts
+cosyn_telemetry.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code local state
+.claude/

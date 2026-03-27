@@ -1,0 +1,178 @@
+CGS RUNTIME WRAPPER — SOURCE AVAILABLE LICENSE
+Copyright (c) 2026 Shane Gaither. All rights reserved.
+
+================================================================================
+NON-COMMERCIAL LICENSE GRANT
+================================================================================
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this Software, to use, copy, modify, merge, publish, and distribute the
+Software, or any substantial portion thereof, for Non-Commercial Purposes only,
+subject to the following conditions:
+
+  1. The above copyright notice and this license notice shall be included in
+     all copies or substantial portions of the Software.
+
+  2. The Software may not be used for Commercial Purposes without a separate
+     written Commercial License Agreement executed with the copyright holder.
+
+  3. This license does not grant any patent rights, express or implied. No
+     patent license is conveyed by this license with respect to any patents
+     held by the copyright holder or any third party.
+
+  4. This license does not grant rights to use the CoSyn, CGS, or CoSynthesis
+     trademarks, trade names, or branding in any form.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING FROM THE USE OF THE SOFTWARE.
+
+The copyright holder provides no indemnification against third-party claims
+arising from the use of the Software.
+
+================================================================================
+DEFINITIONS
+================================================================================
+
+"Software" means the CGS Runtime Wrapper source code, compiled artifacts,
+documentation, and all associated files in this repository, excluding the
+Specification Documents defined below.
+
+"Non-Commercial Purposes" means personal use, academic research, educational
+use, open-source project contribution, and internal technical evaluation during
+the Evaluation Period, provided that the Software is not deployed in a
+production environment serving external users or customers and no direct
+commercial advantage is derived from such use.
+
+"Evaluation Period" means a period not to exceed ninety (90) days from first
+download or first execution, whichever occurs earlier, during which an
+organization may evaluate the Software for potential Commercial use without
+a Commercial License Agreement, provided no production deployment occurs.
+
+"Commercial Purposes" means any use intended for or directed toward commercial
+advantage or monetary compensation, including but not limited to:
+
+  (a) Deploying the Software or any substantial portion thereof in production
+      environments that support commercial operations, customer services, or
+      revenue-generating business activities;
+
+  (b) Integrating the Software or its gate logic, pipeline architecture, or
+      classifier interfaces into a commercial product, platform, or API
+      offered to third parties;
+
+  (c) Sublicensing or reselling the Software or derivative works thereof;
+
+  (d) Using the Software as part of a SaaS, PaaS, or API service offering.
+
+For the avoidance of doubt, internal evaluation during the Evaluation Period
+does NOT constitute Commercial Purposes.
+
+================================================================================
+COMMERCIAL LICENSE
+================================================================================
+
+Commercial use of the Software requires a separate written Commercial License
+Agreement executed with the copyright holder prior to any Commercial use.
+Commercial use includes deployment in revenue generating systems...
+## Production Use Clarification
+
+Use of the CoSyn Runtime Wrapper or associated governance artifacts within operational systems run by any organization, company, or institution constitutes commercial use.
+
+This includes but is not limited to:
+
+- internal enterprise systems
+- SaaS platforms
+- hosted AI services
+- regulated industry deployments
+- production infrastructure
+
+Such use requires a commercial license agreement unless explicitly permitted by the governing license.
+
+To inquire about a Commercial License, contact:
+
+  Shane Gaither
+CoSyn.dce@gmail.com or shane.gaither@gmail.com or daychanger.llc@gmail.com
+  GitHub: https://github.com/SEGaither/cosyn-governance-exe
+  GitHub: https://github.com/SEGaither/cosyn-runtime-wrapper
+
+Commercial License inquiries should include:
+  - Organization name and description
+  - Intended use case and deployment scale
+  - Contact information
+
+================================================================================
+SPECIFICATION DOCUMENTS — PROPRIETARY
+================================================================================
+
+The following files, including but not limited to those listed below, are
+proprietary intellectual property of Shane Gaither and are NOT covered by
+the Non-Commercial License Grant above:
+
+  - cosyn_wrapper_gate_specifications.md
+  - cosyn_wrapper_classifier_specification.md
+  - cosyn_wrapper_interface_contracts.json
+  - cosyn_wrapper_action_list_v2.md
+  - cosyn_wrapper_labeling_schema.json
+
+Any additional specification, architecture, or design documents added to this
+repository are also subject to this proprietary designation unless explicitly
+stated otherwise in writing by the copyright holder.
+
+These Specification Documents are published for inspection, evaluation, and
+academic reference only. They may not be copied, reproduced, or redistributed,
+in whole or in part, except as permitted by separate written agreement with
+the copyright holder. All rights reserved.
+
+================================================================================
+TRADEMARK NOTICE
+================================================================================
+
+This license does not grant any rights to use the CoSyn, CGS, CoSynthesis,
+or related trademarks or trade names. All rights in these marks are reserved
+by Shane Gaither.
+
+================================================================================
+TERMINATION
+================================================================================
+
+This license terminates automatically and without notice if the licensee
+violates any of its terms. Upon termination, the licensee must immediately
+delete or disable all active copies of the Software under their control.
+
+The following sections survive termination: Limitation of Liability,
+Specification Documents — Proprietary, Trademark Notice, and Governing Law
+and Venue.
+
+================================================================================
+EXPORT COMPLIANCE
+================================================================================
+
+The licensee is responsible for compliance with all applicable export control
+laws and regulations, including the U.S. Export Administration Regulations
+(EAR). The Software may not be exported, re-exported, or transferred to any
+country, entity, or person prohibited under applicable export control laws.
+
+================================================================================
+GOVERNING LAW AND VENUE
+================================================================================
+
+This license shall be governed by and construed in accordance with the laws
+of the State of Alabama, United States of America, without regard to conflict
+of law principles. Any dispute arising under this license shall be subject to
+the exclusive jurisdiction of the state and federal courts located in Alabama.
+
+================================================================================
+ENTIRE AGREEMENT
+================================================================================
+
+This license constitutes the entire agreement between the parties with respect
+to the Non-Commercial use of the Software and supersedes all prior or
+contemporaneous understandings regarding such subject matter. No amendment to
+or modification of this license will be binding unless in writing and signed
+by the copyright holder.
+
+================================================================================
