@@ -85,6 +85,8 @@ The `governance/` directory contains the constitutional documents this EXE enfor
 
 This EXE is the standalone implementation of CoSyn governance. The original Python/FastAPI middleware reference implementation lives at [cosyn-runtime-wrapper](https://github.com/SEGaither/cosyn-runtime-wrapper).
 
+> **v5-legal:** A local-LLM variant for legal professional services is in development at [cosyn-governance-exe-legal](https://github.com/SEGaither/cosyn-governance-exe-legal). The v5.x line runs entirely on local inference — no client data leaves the machine.
+
 Build history and technical details are in `docs/build-reports/`.
 
 ## License
