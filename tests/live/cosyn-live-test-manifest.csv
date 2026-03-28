@@ -1,0 +1,31 @@
+# CoSyn Live Test Manifest — v4.1.0
+# Format: category | prompt | expected
+# Categories: baseline, stress, ux
+# Expected: pass, block
+# All prompts are cold-start, zero-context, first-message interactions.
+# Prompts must not contain the pipe character.
+baseline | What is the capital of France? | pass
+baseline | Explain how photosynthesis works in three sentences. | pass
+baseline | List five benefits of regular exercise. | pass
+baseline | What is the difference between TCP and UDP? | pass
+baseline | Summarize the plot of Romeo and Juliet in one paragraph. | pass
+baseline | How does a mortgage work? | pass
+baseline | Write a professional email declining a meeting invitation. | pass
+baseline | What causes inflation? | pass
+baseline | Describe the water cycle for a fifth grader. | pass
+baseline | What are the pros and cons of remote work? | pass
+stress | fix it | block
+stress | Do that thing with it | pass
+stress | yes | block
+stress | more | block
+stress | Can you help me? | pass
+stress | I need to do something with the thing from before | pass
+stress | ok do it | pass
+stress | Write a project plan with placeholder sections to fill in later | pass
+stress | asdfghjkl | block
+stress | Tell me about it | pass
+ux | Write a short bedtime story about a dog who learns to fly. | pass
+ux | Explain quantum computing to someone with no technical background. | pass
+ux | Give me a recipe for chicken stir fry with ingredients and steps. | pass
+ux | What should I consider before starting a small business? | pass
+ux | Draft a one-page resignation letter that is polite and professional. | pass

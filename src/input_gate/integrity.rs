@@ -18,7 +18,10 @@ const STRUCTURAL_FOLLOWERS: &[&str] = &[
 ];
 
 /// Pronouns and references that require a resolvable referent.
-const REFERENCE_TOKENS: &[&str] = &["it", "this", "that"];
+/// "that" excluded: too ambiguous — functions as relative pronoun ("a letter
+/// that is polite") far more often than as a standalone demonstrative reference
+/// in cold-start prompts. Including it causes false blocks on legitimate input.
+const REFERENCE_TOKENS: &[&str] = &["it", "this"];
 
 fn normalize_tokens(input: &str) -> Vec<String> {
     input
@@ -137,15 +140,14 @@ fn has_resolvable_intent(tokens: &[String], normalized_input: &str) -> bool {
 }
 
 fn has_unresolved_reference(tokens: &[String], known_entities: &[String]) -> bool {
+    // If there are grounded entities in the prompt, references have something to point to
     if !known_entities.is_empty() {
         return false;
     }
 
-    // Allow reference tokens when there is sufficient surrounding context (3+ tokens)
-    if tokens.len() >= 3 {
-        return false;
-    }
-
+    // Check for reference tokens regardless of prompt length.
+    // Without a grounded entity, "it", "this", and "that" have no antecedent
+    // in a cold-start interaction.
     for token in tokens {
         let t = token.to_lowercase();
         if REFERENCE_TOKENS.contains(&t.as_str()) {
