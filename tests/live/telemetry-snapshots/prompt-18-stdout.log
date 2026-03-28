@@ -1,0 +1,63 @@
+  [event] input_received — Write a project plan with placeholder sections to fill in later
+  [input] PASS — subject bound
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 349 | est_cost: $0.000185
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = UserText
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+**Project Plan**
+
+**Project Title:** [Insert Project Title]
+
+**Project Overview:**
+- **Objective:** [Define the main goal of the project]
+- **Scope:** [Outline the boundaries and deliverables of the project]
+
+**Project Timeline:**
+- **Start Date:** [Insert Start Date]
+- **End Date:** [Insert End Date]
+- **Milestones:**
+  - [Milestone 1: Description and Date]
+  - [Milestone 2: Description and Date]
+  - [Milestone 3: Description and Date]
+
+**Resources:**
+- **Team Members:**
+  - [Role 1: Name]
+  - [Role 2: Name]
+- **Budget:** [Insert Budget Details]
+- **Tools/Technologies:** [List Required Tools/Technologies]
+
+**Risk Management:**
+- **Potential Risks:**
+  - [Risk 1: Description]
+  - [Risk 2: Description]
+- **Mitigation Strategies:**
+  - [Strategy for Risk 1]
+  - [Strategy for Risk 2]
+
+**Communication Plan:**
+- **Stakeholders:** [List Key Stakeholders]
+- **Meeting Schedule:** [Frequency and Format of Meetings]
+- **Reporting:** [Details on Progress Reporting]
+
+**Evaluation and Success Criteria:**
+- **Metrics for Success:** [Define how success will be measured]
+- **Review Process:** [Outline the review process]
+
+**Appendix:**
+- [Additional Information or Resources]

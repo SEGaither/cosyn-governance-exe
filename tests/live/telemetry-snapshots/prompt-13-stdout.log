@@ -1,0 +1,11 @@
+  [event] input_received — yes
+  [dcc] primary_subject_resolved = false
+  [dcc] subject_binding_source = Unknown
+  [dcc] unknown_halt_triggered = true
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = true
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [input] FAIL — BR-SUBJECT-UNKNOWN
+  [event] input_validation_result — deny
+  [event] final_release_decision — deny

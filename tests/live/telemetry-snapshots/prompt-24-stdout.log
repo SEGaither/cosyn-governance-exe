@@ -1,0 +1,33 @@
+  [event] input_received — What should I consider before starting a small business?
+  [input] PASS — subject recognized (unbound) — cooperative mode
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 283 | est_cost: $0.000146
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = Recognized
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+Before starting a small business, consider the following:
+
+1. **Business Idea**: Ensure it’s viable and meets a market need.
+2. **Market Research**: Understand your target audience and competition.
+3. **Business Plan**: Create a detailed plan outlining goals, strategies, and financial projections.
+4. **Funding**: Assess your startup costs and explore funding options.
+5. **Legal Structure**: Decide on a business structure (e.g., LLC, sole proprietorship) and register your business.
+6. **Licenses and Permits**: Research necessary licenses and permits for your industry.
+7. **Location**: Choose a suitable location based on your market and operational needs.
+8. **Marketing Strategy**: Develop a plan to promote your business effectively.
+9. **Financial Management**: Set up accounting systems and understand cash flow management.
+10. **Support Network**: Build a network of mentors, advisors, and peers for guidance.

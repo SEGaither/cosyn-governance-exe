@@ -1,0 +1,22 @@
+=== CoSyn Run 2026-03-28T13:51:53Z ===
+[event] input_received — Tell me about it
+[input] PASS — subject recognized (unbound) — cooperative mode
+[input] PASS — gate checks passed
+[event] input_validation_result — allow
+[event] llm_call_start — attempt 1/3
+[event] llm_call_end — success
+[draft] PASS — draft produced (attempt 1)
+[validation] PASS — structural_pass = true
+[validation] PASS — semantic_grounding_pass = true
+[event] output_validation_result — allow
+[lock] PASS — artifact locked
+[output] PASS — output released
+[event] final_release_decision — allow
+[dcc] primary_subject_resolved = true
+[dcc] subject_binding_source = Recognized
+[dcc] unknown_halt_triggered = false
+[dcc] semantic_grounding_checked = true
+[dcc] release_blocked_for_grounding = false
+[dcc] version_truth_conflict_count = 0
+[dcc] structural_vs_semantic_pass_gap = false
+

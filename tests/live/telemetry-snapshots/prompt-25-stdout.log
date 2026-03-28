@@ -1,0 +1,46 @@
+  [event] input_received — Draft a one-page resignation letter that is polite and professional.
+  [input] PASS — subject bound
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 312 | est_cost: $0.000162
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = UserText
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+[Your Name]  
+[Your Address]  
+[City, State, Zip Code]  
+[Email Address]  
+[Phone Number]  
+[Date]  
+
+[Manager's Name]  
+[Company's Name]  
+[Company's Address]  
+[City, State, Zip Code]  
+
+Dear [Manager's Name],  
+
+I am writing to formally resign from my position at [Company's Name], effective [Last Working Day, typically two weeks from the date above].  
+
+This decision was not easy and took a lot of consideration. I am grateful for the opportunities I have had during my time at [Company's Name]. I appreciate the support and guidance I have received from you and my colleagues, which has contributed significantly to my professional growth.  
+
+I am committed to ensuring a smooth transition and will do everything possible to hand over my responsibilities effectively. Please let me know how I can assist during this period.  
+
+Thank you once again for the opportunity to be a part of [Company's Name]. I look forward to staying in touch and wish the company continued success in the future.  
+
+Sincerely,  
+
+[Your Name]  

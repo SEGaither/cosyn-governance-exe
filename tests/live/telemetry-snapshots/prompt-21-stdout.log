@@ -1,0 +1,30 @@
+  [event] input_received — Write a short bedtime story about a dog who learns to fly.
+  [input] PASS — subject bound
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 329 | est_cost: $0.000174
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = UserText
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+Once upon a time in a cozy little town, there lived a curious dog named Max. Max loved to watch the birds soar high in the sky and dreamed of flying like them. One sunny afternoon, he discovered a pair of colorful wings in his owner's attic. 
+
+With a wagging tail, Max strapped on the wings and climbed to the top of a hill. Taking a deep breath, he leaped into the air. To his surprise, the wings flapped and lifted him off the ground! Max soared through the clouds, barking joyfully as he danced with the birds.
+
+He flew over fields, rivers, and even waved at the children playing below. But as the sun began to set, Max realized it was time to return home. With a gentle glide, he landed safely in his backyard, his heart full of happiness.
+
+That night, as Max snuggled in his bed, he dreamed of his flying adventure, knowing that with a little courage and imagination, anything was possible. And from that day on, whenever he wanted to feel the sky, he would don his wings and take to the air, forever the flying dog. 
+
+And so, Max drifted off to sleep, dreaming of new adventures to come. The end.

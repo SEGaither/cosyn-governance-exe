@@ -1,0 +1,40 @@
+  [event] input_received — Give me a recipe for chicken stir fry with ingredients and steps.
+  [input] PASS — subject recognized (unbound) — cooperative mode
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 332 | est_cost: $0.000174
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = Recognized
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+**Chicken Stir Fry Recipe**
+
+**Ingredients:**
+- 1 lb chicken breast, sliced thin
+- 2 cups mixed vegetables (bell peppers, broccoli, carrots, snap peas)
+- 3 tablespoons soy sauce
+- 2 tablespoons vegetable oil
+- 2 cloves garlic, minced
+- 1 tablespoon ginger, minced
+- 1 tablespoon cornstarch (optional, for thickening)
+- Cooked rice or noodles (for serving)
+
+**Steps:**
+1. **Prepare Chicken:** In a bowl, toss the sliced chicken with 1 tablespoon of soy sauce and cornstarch (if using). Let it marinate for 15 minutes.
+2. **Heat Oil:** In a large skillet or wok, heat the vegetable oil over medium-high heat.
+3. **Cook Chicken:** Add the marinated chicken to the skillet and stir-fry for 5-7 minutes until cooked through. Remove chicken and set aside.
+4. **Sauté Vegetables:** In the same skillet, add garlic and ginger, stir for 30 seconds, then add mixed vegetables. Stir-fry for 3-5 minutes until tender-crisp.
+5. **Combine:** Return the chicken to the skillet, add the remaining soy sauce, and stir to combine. Cook for an additional 2 minutes.
+6. **Serve:** Serve hot over cooked rice or noodles. Enjoy!

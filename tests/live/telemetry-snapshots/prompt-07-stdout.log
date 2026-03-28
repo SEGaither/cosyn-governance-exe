@@ -1,0 +1,34 @@
+  [event] input_received — Write a professional email declining a meeting invitation.
+  [input] PASS — subject bound
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 141 | est_cost: $0.000061
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = UserText
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+Subject: Meeting Invitation Decline
+
+Dear [Recipient's Name],
+
+Thank you for the invitation to the meeting on [date]. I appreciate the opportunity; however, I must decline due to prior commitments.
+
+I hope the meeting goes well and look forward to hearing about the outcomes.
+
+Best regards,
+
+[Your Name]  
+[Your Position]  
+[Your Contact Information]  

@@ -1,0 +1,22 @@
+  [event] input_received — Explain how photosynthesis works in three sentences.
+  [input] PASS — subject recognized (unbound) — cooperative mode
+  [input] PASS — gate checks passed
+  [event] input_validation_result — allow
+  [event] llm_call_start — attempt 1/3
+  USAGE → req_count: 1 | est_tokens: 165 | est_cost: $0.000076
+  [event] llm_call_end — success
+  [draft] PASS — draft produced (attempt 1)
+  [validation] PASS — structural_pass = true
+  [validation] PASS — semantic_grounding_pass = true
+  [event] output_validation_result — allow
+  [lock] PASS — artifact locked
+  [dcc] primary_subject_resolved = true
+  [dcc] subject_binding_source = Recognized
+  [dcc] unknown_halt_triggered = false
+  [dcc] semantic_grounding_checked = true
+  [dcc] release_blocked_for_grounding = false
+  [dcc] version_truth_conflict_count = 0
+  [dcc] structural_vs_semantic_pass_gap = false
+  [output] PASS — output released
+  [event] final_release_decision — allow
+Photosynthesis is the process by which green plants, algae, and some bacteria convert light energy into chemical energy, using sunlight to transform carbon dioxide and water into glucose and oxygen. Chlorophyll, the green pigment in chloroplasts, captures sunlight, initiating the reaction that splits water molecules and releases oxygen as a byproduct. The glucose produced serves as energy and a building block for growth and metabolism in the organism.
