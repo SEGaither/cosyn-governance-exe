@@ -50,4 +50,6 @@ pub struct ChatUsage {
 pub struct CosynMetadata {
     pub governed: bool,
     pub breach: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coaching: Option<String>,
 }

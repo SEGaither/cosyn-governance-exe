@@ -1,5 +1,6 @@
 pub mod authority_loader;
 pub mod audit;
+pub mod coaching;
 pub mod config;
 pub mod config_loader;
 pub mod core;
