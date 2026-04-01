@@ -1,0 +1,26 @@
+# cosyn.toml — CoSyn governance proxy configuration
+# Copy to cosyn.toml and edit for your environment.
+
+# Port the proxy listens on
+port = 8901
+
+# LLM provider: "openai", "anthropic", "ollama"
+provider = "openai"
+
+# Streaming mode: "buffer" (full governance before user sees response)
+# or "stream_hold" (stream through, hold final chunk for governance check)
+streaming_mode = "buffer"
+
+# Multi-turn context: false = govern each turn in isolation (stateless)
+# true = store conversation history per session (stateful, stronger governance)
+multi_turn = false
+
+# Fallback when cosyn is offline: "fail_closed" (tools fail, user knows governance is down)
+# or "passthrough" (forward directly to provider ungoverned)
+fallback = "fail_closed"
+
+# Optional: directory containing external governance artifacts
+# profile_dir = "governance/profiles"
+
+# Log level: "error", "warn", "info", "debug", "trace"
+# log_level = "info"

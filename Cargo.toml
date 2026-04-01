@@ -1,6 +1,6 @@
 [package]
 name = "cosyn"
-version = "4.1.1"
+version = "5.0.0"
 edition = "2021"
 authors = ["Shane Gaither"]
 
@@ -12,7 +12,17 @@ log = "0.4"
 env_logger = "0.10"
 uuid = { version = "1", features = ["v4"] }
 reqwest = { version = "0.12", features = ["blocking", "json"] }
-eframe = "0.31"
+tokio = { version = "1", features = ["full"] }
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+clap = { version = "4", features = ["derive"] }
+toml = "0.8"
+async-trait = "0.1"
+
+[[bin]]
+name = "cosyn"
+path = "src/main.rs"
 
 [[bin]]
 name = "cosyn-cli"
@@ -20,4 +30,3 @@ path = "src/cli.rs"
 
 [profile.release]
 opt-level = 3
-

@@ -80,7 +80,7 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
     }
 
     // Version truth
-    let ui_version = crate::ui_runtime::APP_VERSION;
+    let ui_version = env!("CARGO_PKG_VERSION");
     ctrl.version_truth = crate::dcc::version::evaluate_version_truth(
         crate::dcc::version::RUNTIME_VERSION,
         ui_version,
@@ -291,6 +291,285 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
         text: draft.text,
         locked: true,
         block_reason_code: None,
+        input_tokens: 0,
+        output_tokens: 0,
+    })
+}
+
+/// Async governance pipeline for proxy mode.
+/// Runs the same DCC gates as `run()`, but uses an async provider instead of blocking llm_client.
+pub async fn run_governed(
+    input: &str,
+    provider: &dyn crate::provider::LlmProvider,
+) -> CosynResult<LockedOutput> {
+    use crate::provider::{LlmRequest, LlmMessage};
+
+    let mut ctrl = RuntimeControl::new();
+    crate::telemetry::log_event("input_received", input);
+
+    // ── INGESTED ──
+    ctrl.phase = DccPipelinePhase::Ingested;
+
+    // ── BINDING ──
+    ctrl.phase = DccPipelinePhase::Binding;
+    let binding = crate::dcc::subject::bind_subject(input);
+    ctrl.canonical_subject = binding.canonical_subject;
+    ctrl.subject_source = binding.source;
+
+    if ctrl.subject_source == SubjectSource::Unknown {
+        ctrl.block_reason_code = Some(BlockReasonCode::BrSubjectUnknown);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(Stage::Input, false, "BR-SUBJECT-UNKNOWN");
+        crate::telemetry::log_event("input_validation_result", "deny");
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Input(format!(
+            "{}: subject could not be resolved",
+            BlockReasonCode::BrSubjectUnknown.code()
+        )));
+    }
+    if ctrl.subject_source == SubjectSource::Recognized {
+        crate::telemetry::log_stage(
+            Stage::Input,
+            true,
+            "subject recognized (unbound) — cooperative mode",
+        );
+    } else {
+        crate::telemetry::log_stage(Stage::Input, true, "subject bound");
+    }
+
+    // ── GATE_CHECK ──
+    ctrl.phase = DccPipelinePhase::GateCheck;
+
+    // Evidence
+    ctrl.evidence_scope = crate::dcc::evidence::evaluate_evidence(input);
+    if ctrl.evidence_scope == EvidenceScope::Unsatisfied {
+        ctrl.block_reason_code = Some(BlockReasonCode::BrEvidenceUnsat);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(Stage::Input, false, "BR-EVIDENCE-UNSAT");
+        crate::telemetry::log_event("input_validation_result", "deny");
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Input(format!(
+            "{}: evidence not satisfied",
+            BlockReasonCode::BrEvidenceUnsat.code()
+        )));
+    }
+
+    // Ambiguity
+    ctrl.ambiguity_state = crate::dcc::ambiguity::evaluate_ambiguity(input);
+    if ctrl.ambiguity_state == crate::dcc::types::AmbiguityState::Ambiguous {
+        ctrl.block_reason_code = Some(BlockReasonCode::BrAmbiguity);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(Stage::Input, false, "BR-AMBIGUITY");
+        crate::telemetry::log_event("input_validation_result", "deny");
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Input(format!(
+            "{}: ambiguity detected in input",
+            BlockReasonCode::BrAmbiguity.code()
+        )));
+    }
+
+    // Version truth — in proxy mode, compare runtime to itself (no UI)
+    ctrl.version_truth = crate::dcc::version::evaluate_version_truth(
+        crate::dcc::version::RUNTIME_VERSION,
+        crate::dcc::version::RUNTIME_VERSION,
+    );
+
+    crate::telemetry::log_stage(Stage::Input, true, "gate checks passed");
+    crate::telemetry::log_event("input_validation_result", "allow");
+
+    // Pre-reasoning derivation
+    ctrl.structural_pass = true;
+    ctrl.semantic_grounding_pass = ctrl.subject_source != SubjectSource::Unknown;
+
+    ctrl.derive_reasoning_permitted();
+    if !ctrl.reasoning_permitted {
+        ctrl.block_reason_code = Some(BlockReasonCode::BrReleaseDenied);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(
+            Stage::Draft,
+            false,
+            "BR-RELEASE-DENIED: reasoning not permitted",
+        );
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Orchestration(format!(
+            "{}: reasoning not permitted before DCC satisfaction",
+            BlockReasonCode::BrReleaseDenied.code()
+        )));
+    }
+
+    // ── DRAFT + GROUNDING with revision loop ──
+    const MAX_ATTEMPTS: usize = 3;
+    let mut draft = crate::core::types::DraftOutput { text: String::new() };
+    let mut last_failure: Option<CosynError>;
+    let mut total_input_tokens: u64 = 0;
+    let mut total_output_tokens: u64 = 0;
+
+    for attempt in 1..=MAX_ATTEMPTS {
+        let prompt = if attempt == 1 {
+            ctrl.canonical_subject.as_deref().unwrap_or(input).to_string()
+        } else {
+            let verdicts = crate::governance_layer::evaluate_all(input, &draft);
+            let failures: Vec<String> = verdicts
+                .iter()
+                .filter(|v| !v.passed)
+                .map(|v| format!("- rule '{}': {}", v.rule, v.detail))
+                .collect();
+            let failure_list = failures.join("\n");
+            format!(
+                "Original request: {}\n\nYour previous response was blocked for the following reasons:\n{}\n\nRevise your response to address these issues. Do not include placeholder text, filler, or speculative content.",
+                input, failure_list
+            )
+        };
+
+        crate::telemetry::log_event(
+            "llm_call_start",
+            &format!("attempt {}/{}", attempt, MAX_ATTEMPTS),
+        );
+
+        let llm_request = LlmRequest {
+            messages: vec![
+                LlmMessage {
+                    role: "system".into(),
+                    content: "You are a controlled drafting engine. Produce a concise, direct response to the user input. Do not include placeholders, filler, or speculative content.".into(),
+                },
+                LlmMessage {
+                    role: "user".into(),
+                    content: prompt,
+                },
+            ],
+            model: None,
+            max_tokens: Some(1024),
+            temperature: Some(0.3),
+        };
+
+        match provider.complete(&llm_request).await {
+            Ok(llm_response) => {
+                crate::telemetry::log_event("llm_call_end", "success");
+                crate::telemetry::log_stage(
+                    Stage::Draft,
+                    true,
+                    &format!("draft produced (attempt {})", attempt),
+                );
+                total_input_tokens += llm_response.input_tokens;
+                total_output_tokens += llm_response.output_tokens;
+                draft = crate::core::types::DraftOutput { text: llm_response.content };
+            }
+            Err(e) => {
+                crate::telemetry::log_event("llm_call_end", "error");
+                crate::telemetry::log_event("final_release_decision", "deny");
+                return Err(e);
+            }
+        }
+
+        // ── GROUNDING ──
+        ctrl.phase = DccPipelinePhase::Grounding;
+
+        ctrl.structural_pass = crate::dcc::grounding::evaluate_structural(input, &draft);
+        if !ctrl.structural_pass {
+            crate::telemetry::log_stage(
+                Stage::Validation,
+                false,
+                &format!("BR-STRUCTURAL-FAIL (attempt {})", attempt),
+            );
+            last_failure = Some(CosynError::Validation(format!(
+                "{}: draft failed structural checks",
+                BlockReasonCode::BrStructuralFail.code()
+            )));
+            if attempt < MAX_ATTEMPTS {
+                crate::telemetry::log_event("revision", &format!("retrying ({}/{})", attempt + 1, MAX_ATTEMPTS));
+                continue;
+            }
+            ctrl.block_reason_code = Some(BlockReasonCode::BrStructuralFail);
+            ctrl.phase = DccPipelinePhase::Blocked;
+            crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+            crate::telemetry::log_event("output_validation_result", "deny");
+            crate::telemetry::log_event("final_release_decision", "deny");
+            return Err(last_failure.unwrap());
+        }
+        crate::telemetry::log_stage(Stage::Validation, true, "structural_pass = true");
+
+        ctrl.semantic_grounding_pass = crate::dcc::grounding::evaluate_semantic_grounding(
+            input,
+            &draft,
+            ctrl.subject_source,
+        );
+        if !ctrl.semantic_grounding_pass {
+            crate::telemetry::log_stage(
+                Stage::Validation,
+                false,
+                &format!("BR-GROUNDING-FAIL (attempt {})", attempt),
+            );
+            last_failure = Some(CosynError::Governance(format!(
+                "{}: draft failed semantic grounding",
+                BlockReasonCode::BrGroundingFail.code()
+            )));
+            if attempt < MAX_ATTEMPTS {
+                crate::telemetry::log_event("revision", &format!("retrying ({}/{})", attempt + 1, MAX_ATTEMPTS));
+                continue;
+            }
+            ctrl.block_reason_code = Some(BlockReasonCode::BrGroundingFail);
+            ctrl.phase = DccPipelinePhase::Blocked;
+            crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+            crate::telemetry::log_event("output_validation_result", "deny");
+            crate::telemetry::log_event("final_release_decision", "deny");
+            return Err(last_failure.unwrap());
+        }
+        crate::telemetry::log_stage(Stage::Validation, true, "semantic_grounding_pass = true");
+
+        break;
+    }
+
+    // ── READY → FINALIZING ──
+    ctrl.phase = DccPipelinePhase::Ready;
+
+    let released = crate::dcc::release::derive_release(&mut ctrl);
+
+    if let Some(block_code) = crate::dcc::block::evaluate_block(&ctrl) {
+        ctrl.block_reason_code = Some(block_code);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(Stage::Lock, false, block_code.code());
+        crate::telemetry::log_event("output_validation_result", "deny");
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Lock(format!(
+            "{}: release blocked",
+            block_code.code()
+        )));
+    }
+
+    if !released {
+        ctrl.block_reason_code = Some(BlockReasonCode::BrReleaseDenied);
+        ctrl.phase = DccPipelinePhase::Blocked;
+        crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+        crate::telemetry::log_stage(Stage::Lock, false, "BR-RELEASE-DENIED");
+        crate::telemetry::log_event("output_validation_result", "deny");
+        crate::telemetry::log_event("final_release_decision", "deny");
+        return Err(CosynError::Lock(format!(
+            "{}: release_pass = false",
+            BlockReasonCode::BrReleaseDenied.code()
+        )));
+    }
+
+    crate::telemetry::log_event("output_validation_result", "allow");
+
+    ctrl.phase = DccPipelinePhase::Finalizing;
+    crate::telemetry::log_stage(Stage::Lock, true, "artifact locked");
+
+    ctrl.phase = DccPipelinePhase::Released;
+    crate::dcc::telemetry::emit_dcc_telemetry(&ctrl);
+    crate::telemetry::log_stage(Stage::Output, true, "output released");
+
+    crate::telemetry::log_event("final_release_decision", "allow");
+    Ok(LockedOutput {
+        text: draft.text,
+        locked: true,
+        block_reason_code: None,
+        input_tokens: total_input_tokens,
+        output_tokens: total_output_tokens,
     })
 }
 

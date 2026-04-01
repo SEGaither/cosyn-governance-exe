@@ -17,6 +17,8 @@ pub struct LockedOutput {
     pub text: String,
     pub locked: bool,
     pub block_reason_code: Option<crate::dcc::types::BlockReasonCode>,
+    pub input_tokens: u64,
+    pub output_tokens: u64,
 }
 
 #[derive(Debug, Clone)]
