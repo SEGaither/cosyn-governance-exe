@@ -1,4 +1,5 @@
-use crate::dcc::types::EvidenceScope;
+use crate::dcc::types::{EvidenceScope, PriorMessage};
+use crate::dcc::continuation;
 
 /// Function words and vague placeholders that don't constitute evidence.
 const NON_SUBSTANTIVE: &[&str] = &[
@@ -15,18 +16,16 @@ const NON_SUBSTANTIVE: &[&str] = &[
     "everything", "somewhere", "somehow", "someone", "anybody",
 ];
 
-/// Evaluate evidence scope. Evidence is SATISFIED when:
-/// - input is non-empty
-/// - input contains resolvable content (not just structural markers)
-/// - input contains at least one substantive content word
-/// Returns UNSATISFIED otherwise. No fallback.
-pub fn evaluate_evidence(input: &str) -> EvidenceScope {
+/// Evaluate evidence scope with optional conversation context.
+///
+/// Continuation phrases can inherit substance from prior context.
+/// When prior_messages is None, behavior is identical to v5.1.0.
+pub fn evaluate_evidence(input: &str, prior_messages: Option<&[PriorMessage]>) -> EvidenceScope {
     let trimmed = input.trim();
     if trimmed.is_empty() {
         return EvidenceScope::Unsatisfied;
     }
 
-    // All-structural content (only markdown markers, no substance)
     let all_structural = trimmed.lines().all(|line| {
         let t = line.trim();
         t.is_empty()
@@ -42,16 +41,25 @@ pub fn evaluate_evidence(input: &str) -> EvidenceScope {
         return EvidenceScope::Unsatisfied;
     }
 
-    // Check for at least one substantive content word
     let has_substance = trimmed
         .split_whitespace()
         .map(|t| t.trim_matches(|c: char| !c.is_alphanumeric()).to_lowercase())
         .filter(|t| !t.is_empty())
         .any(|t| !NON_SUBSTANTIVE.contains(&t.as_str()));
 
-    if !has_substance {
-        return EvidenceScope::Unsatisfied;
+    if has_substance {
+        return EvidenceScope::Satisfied;
     }
 
-    EvidenceScope::Satisfied
+    // ── Context expansion (v5.2.0) ──
+    if let Some(msgs) = prior_messages {
+        if !msgs.is_empty()
+            && continuation::is_continuation(trimmed)
+            && continuation::prior_has_substance(msgs)
+        {
+            return EvidenceScope::Satisfied;
+        }
+    }
+
+    EvidenceScope::Unsatisfied
 }

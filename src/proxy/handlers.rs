@@ -61,8 +61,23 @@ pub async fn chat_completions(
         .map(|m| m.content.clone())
         .unwrap_or_default();
 
+    // Extract prior messages (everything before the last message), filtering to user/assistant only
+    let prior: Option<Vec<crate::dcc::types::PriorMessage>> = if request.messages.len() > 1 {
+        let msgs: Vec<crate::dcc::types::PriorMessage> = request.messages[..request.messages.len()-1]
+            .iter()
+            .filter(|m| m.role == "user" || m.role == "assistant")
+            .map(|m| crate::dcc::types::PriorMessage {
+                role: m.role.clone(),
+                content: m.content.clone(),
+            })
+            .collect();
+        if msgs.is_empty() { None } else { Some(msgs) }
+    } else {
+        None
+    };
+
     // Run governed pipeline
-    match crate::orchestrator::run_governed(&user_message, state.provider.as_ref()).await {
+    match crate::orchestrator::run_governed(&user_message, state.provider.as_ref(), prior.as_deref()).await {
         Ok(output) => {
             let response = ChatCompletionResponse {
                 id: format!("cosyn-{}", uuid::Uuid::new_v4()),

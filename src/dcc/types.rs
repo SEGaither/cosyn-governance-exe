@@ -10,6 +10,12 @@ pub enum SubjectSource {
     Unknown,
 }
 
+#[derive(Debug, Clone)]
+pub struct PriorMessage {
+    pub role: String,
+    pub content: String,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EvidenceScope {
     Satisfied,

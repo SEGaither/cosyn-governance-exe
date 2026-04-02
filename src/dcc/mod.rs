@@ -7,3 +7,4 @@ pub mod grounding;
 pub mod release;
 pub mod block;
 pub mod telemetry;
+pub mod continuation;

@@ -20,7 +20,7 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
 
     // ── BINDING ──
     ctrl.phase = DccPipelinePhase::Binding;
-    let binding = crate::dcc::subject::bind_subject(input);
+    let binding = crate::dcc::subject::bind_subject(input, None);
     ctrl.canonical_subject = binding.canonical_subject;
     ctrl.subject_source = binding.source;
 
@@ -50,7 +50,7 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
     ctrl.phase = DccPipelinePhase::GateCheck;
 
     // Evidence
-    ctrl.evidence_scope = crate::dcc::evidence::evaluate_evidence(input);
+    ctrl.evidence_scope = crate::dcc::evidence::evaluate_evidence(input, None);
     if ctrl.evidence_scope == EvidenceScope::Unsatisfied {
         ctrl.block_reason_code = Some(BlockReasonCode::BrEvidenceUnsat);
         ctrl.phase = DccPipelinePhase::Blocked;
@@ -65,7 +65,7 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
     }
 
     // Ambiguity
-    ctrl.ambiguity_state = crate::dcc::ambiguity::evaluate_ambiguity(input);
+    ctrl.ambiguity_state = crate::dcc::ambiguity::evaluate_ambiguity(input, None);
     if ctrl.ambiguity_state == crate::dcc::types::AmbiguityState::Ambiguous {
         ctrl.block_reason_code = Some(BlockReasonCode::BrAmbiguity);
         ctrl.phase = DccPipelinePhase::Blocked;
@@ -301,6 +301,7 @@ pub fn run(input: &str) -> CosynResult<LockedOutput> {
 pub async fn run_governed(
     input: &str,
     provider: &dyn crate::provider::LlmProvider,
+    prior_messages: Option<&[crate::dcc::types::PriorMessage]>,
 ) -> CosynResult<LockedOutput> {
     use crate::provider::{LlmRequest, LlmMessage};
 
@@ -312,7 +313,7 @@ pub async fn run_governed(
 
     // ── BINDING ──
     ctrl.phase = DccPipelinePhase::Binding;
-    let binding = crate::dcc::subject::bind_subject(input);
+    let binding = crate::dcc::subject::bind_subject(input, prior_messages);
     ctrl.canonical_subject = binding.canonical_subject;
     ctrl.subject_source = binding.source;
 
@@ -342,7 +343,7 @@ pub async fn run_governed(
     ctrl.phase = DccPipelinePhase::GateCheck;
 
     // Evidence
-    ctrl.evidence_scope = crate::dcc::evidence::evaluate_evidence(input);
+    ctrl.evidence_scope = crate::dcc::evidence::evaluate_evidence(input, prior_messages);
     if ctrl.evidence_scope == EvidenceScope::Unsatisfied {
         ctrl.block_reason_code = Some(BlockReasonCode::BrEvidenceUnsat);
         ctrl.phase = DccPipelinePhase::Blocked;
@@ -357,7 +358,7 @@ pub async fn run_governed(
     }
 
     // Ambiguity
-    ctrl.ambiguity_state = crate::dcc::ambiguity::evaluate_ambiguity(input);
+    ctrl.ambiguity_state = crate::dcc::ambiguity::evaluate_ambiguity(input, prior_messages);
     if ctrl.ambiguity_state == crate::dcc::types::AmbiguityState::Ambiguous {
         ctrl.block_reason_code = Some(BlockReasonCode::BrAmbiguity);
         ctrl.phase = DccPipelinePhase::Blocked;

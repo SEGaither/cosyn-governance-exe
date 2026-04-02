@@ -20,7 +20,7 @@ pub fn accept(input: &str) -> CosynResult<ExecutionRequest> {
         ));
     }
 
-    let binding = bind_subject(trimmed);
+    let binding = bind_subject(trimmed, None);
 
     Ok(ExecutionRequest {
         id: "req-001".into(),

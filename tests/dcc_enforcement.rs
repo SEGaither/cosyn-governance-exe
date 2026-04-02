@@ -16,7 +16,7 @@ use cosyn::dcc::version::evaluate_version_truth;
 
 #[test]
 fn t01_unresolved_subject_blocks() {
-    let binding = bind_subject("");
+    let binding = bind_subject("", None);
     assert_eq!(binding.source, SubjectSource::Unknown);
     assert!(binding.canonical_subject.is_none());
 
@@ -137,10 +137,10 @@ fn t03_version_undefined_blocks() {
 
 #[test]
 fn t04_evidence_unsatisfied_blocks() {
-    let scope = evaluate_evidence("");
+    let scope = evaluate_evidence("", None);
     assert_eq!(scope, EvidenceScope::Unsatisfied);
 
-    let scope = evaluate_evidence("# Header\n---\n```\n```");
+    let scope = evaluate_evidence("# Header\n---\n```\n```", None);
     assert_eq!(scope, EvidenceScope::Unsatisfied);
 
     let mut ctrl = RuntimeControl::new();
@@ -160,7 +160,7 @@ fn t04_evidence_unsatisfied_blocks() {
 
 #[test]
 fn t04_ambiguity_blocks() {
-    let amb = evaluate_ambiguity("");
+    let amb = evaluate_ambiguity("", None);
     assert_eq!(amb, AmbiguityState::Ambiguous);
 
     let mut ctrl = RuntimeControl::new();

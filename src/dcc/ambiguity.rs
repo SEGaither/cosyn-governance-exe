@@ -1,4 +1,5 @@
-use crate::dcc::types::AmbiguityState;
+use crate::dcc::types::{AmbiguityState, PriorMessage};
+use crate::dcc::continuation;
 use crate::input_gate::integrity::evaluate_integrity;
 
 /// Words that carry no specific meaning on their own.
@@ -21,19 +22,17 @@ const FUNCTION_WORDS: &[&str] = &[
     "and", "or", "but", "not", "no", "so", "if", "then", "just",
 ];
 
-/// Evaluate ambiguity state from input.
-/// AMBIGUOUS when:
-/// - integrity check detects unresolved references or insufficient intent
-/// - all content words are vague placeholders
-/// - no substantive content words exist
-/// CLEAR otherwise.
-pub fn evaluate_ambiguity(input: &str) -> AmbiguityState {
+/// Evaluate ambiguity state from input with optional conversation context.
+///
+/// Vague nouns remain Ambiguous regardless of context.
+/// Deictic references can resolve to Clear if prior context has substance.
+/// When prior_messages is None, behavior is identical to v5.1.0.
+pub fn evaluate_ambiguity(input: &str, prior_messages: Option<&[PriorMessage]>) -> AmbiguityState {
     let trimmed = input.trim();
     if trimmed.is_empty() {
         return AmbiguityState::Ambiguous;
     }
 
-    // Extract content words (not function words)
     let tokens: Vec<String> = trimmed
         .split_whitespace()
         .map(|t| t.trim_matches(|c: char| !c.is_alphanumeric()).to_lowercase())
@@ -45,12 +44,10 @@ pub fn evaluate_ambiguity(input: &str) -> AmbiguityState {
         .filter(|t| !FUNCTION_WORDS.contains(&t.as_str()))
         .collect();
 
-    // No content words at all — pure function words
     if content_words.is_empty() {
         return AmbiguityState::Ambiguous;
     }
 
-    // All content words are vague placeholders
     let all_vague = content_words
         .iter()
         .all(|w| VAGUE_NOUNS.contains(&w.as_str()));
@@ -58,11 +55,20 @@ pub fn evaluate_ambiguity(input: &str) -> AmbiguityState {
         return AmbiguityState::Ambiguous;
     }
 
-    // Delegate to integrity check for reference resolution and intent
     let signal = evaluate_integrity(trimmed);
     if signal.proceed {
-        AmbiguityState::Clear
-    } else {
-        AmbiguityState::Ambiguous
+        return AmbiguityState::Clear;
     }
+
+    // ── Context resolution (v5.2.0) ──
+    if let Some(msgs) = prior_messages {
+        if !msgs.is_empty()
+            && continuation::has_deictic_reference(trimmed)
+            && continuation::prior_has_substance(msgs)
+        {
+            return AmbiguityState::Clear;
+        }
+    }
+
+    AmbiguityState::Ambiguous
 }
